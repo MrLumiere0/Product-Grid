@@ -2,29 +2,42 @@
 import React, { useState } from 'react';
 import PriceFilter from './PriceFilter';
 import products from './products';
+import DropDownMenu from './DropdownMenu.js';
+import ProductCard from './ProductCard.js';
+
 
 const ProductGrid = () => {
-  const [maxPrice, setMaxPrice] = useState(Infinity);
+ 
+const [selectedSort, setSelectedSort] = useState(' ');
 
-  const handlePriceChange = (price) => {
-    setMaxPrice(price);
-  };
+// How to do conditional rendering (couldn't figure out from youtube)
 
-  const filteredProducts = products.filter(product => product.price <= maxPrice);
+  function handlePriceSort (selectedTypeSort, products) {
+    if (selectedTypeSort == 'price') {
+             setSelectedSort(products.sort((a,b) => a.price - b.price));
+          }
+    
+    else if (selectedTypeSort == 'atoz') {
+      setSelectedSort(products.sort((a,b) => b.name - a.name));
+
+          }
+    
+    else if (selectedTypeSort == 'ztoa') {
+      setSelectedSort(products.sort((a,b) => b.name - a.name));
+          } 
+        }
+
 
   return (
     <div>
-      <PriceFilter onPriceChange={handlePriceChange} />
-      <div className="products">
-        {filteredProducts.map(product => (
-          <div key={product.id}>
-            <h3>{product.name}</h3>
-            <p>${product.price}</p>
-          </div>
-        ))}
-      </div>
+      <DropDownMenu onSelecteditem = {(e) => handlePriceSort(e.target.value)}/>
+{/*                
+               {/*How do we enable the output of our func that checks our value of selected item  to redner the correct logic */}
+               
+                {/* {((products) => return ( 
+                            <ProductCard key={product.id} name={product.name} price={product.price}/>)} */}
     </div>
-  );
+  ); 
 };
 
 export default ProductGrid;
