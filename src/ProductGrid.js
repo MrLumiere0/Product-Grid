@@ -1,43 +1,80 @@
-// ProductGrid.js
-import React, { useState } from 'react';
-import PriceFilter from './PriceFilter';
+import React from 'react';
+import './App.css'
 import products from './products';
 import DropDownMenu from './DropdownMenu.js';
 import ProductCard from './ProductCard.js';
+import { useState } from 'react';
+import Slider from './Slider.js';
+
 
 
 const ProductGrid = () => {
- 
-const [selectedSort, setSelectedSort] = useState(' ');
 
-// How to do conditional rendering (couldn't figure out from youtube)
+  const [productData, setProducts] = useState(products);
+  const [sortType, setSortType] = useState('');
+  const [sliderSort, setSliderSort] = useState(350);
 
-  function handlePriceSort (selectedTypeSort, products) {
-    if (selectedTypeSort == 'price') {
-             setSelectedSort(products.sort((a,b) => a.price - b.price));
-          }
+  function handleSort (selectedButton) {
+    const type = selectedButton.value;
+    setSortType(type);
+    let productList = [...products];
+
+    if (type === "price") {
+      console.log("price");
+      productList.sort((a,b) => a.price - b.price);
+    }
     
-    else if (selectedTypeSort == 'atoz') {
-      setSelectedSort(products.sort((a,b) => b.name - a.name));
+    else if (type === "atoz") {
+      console.log("atoz");
+      productList.sort((a,b) => a.name > b.name ? 1 :-1);
+    }
 
-          }
-    
-    else if (selectedTypeSort == 'ztoa') {
-      setSelectedSort(products.sort((a,b) => b.name - a.name));
-          } 
-        }
+    else if (type === "ztoa") {
+      console.log("atoz");
+      productList.sort((a,b) => a.name > b.name ? -1 : 1);
+    }
+
+    else {
+      productList.sort();
+    }
+
+    setProducts(productList);
+  }
+
+
+function handleSliderSort (slideValue) {
+  let price = slideValue.value;
+  setSliderSort(price);
+  let productsList = [...products];
+
+  productsList = productsList.filter((products) => {
+      return products.price < price;
+  })
+   
+  setProducts(productsList);
+}
+
+
+
 
 
   return (
+    <>
     <div>
-      <DropDownMenu onSelecteditem = {(e) => handlePriceSort(e.target.value)}/>
-{/*                
-               {/*How do we enable the output of our func that checks our value of selected item  to redner the correct logic */}
-               
-                {/* {((products) => return ( 
-                            <ProductCard key={product.id} name={product.name} price={product.price}/>)} */}
+            <DropDownMenu sorttType ={sortType} onSelect={(e)=> handleSort(e.target)} />
     </div>
-  ); 
+
+    <div className="sider-container">
+      <Slider sliderState = {sliderSort} onSlide = {(e)=>handleSliderSort(e.target)}/>
+    </div>
+    
+    <div className="products">
+      {productData.map(object => <ProductCard {...object} />)}
+    </div>
+
+    </>
+    );
+
 };
 
 export default ProductGrid;
