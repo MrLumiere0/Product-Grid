@@ -55,9 +55,6 @@ function handleSliderSort (slideValue) {
 }
 
 
-
-
-
   return (
     <>
     <div>
